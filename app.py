@@ -154,14 +154,14 @@ def region_growing_constrained(image, seeds, similarity_func, threshold, use_pca
     return regions
 
 def plot_image(image, title=""):
-    fig, ax = plt.subplots(figsize=(4, 4))  # Reduced size
+    fig, ax = plt.subplots()
     ax.imshow(image, cmap='gray')
     ax.set_title(title)
     ax.axis('off')
     st.pyplot(fig)
 
 def plot_regions(region_map, title="Segmented Regions"):
-    fig, ax = plt.subplots(figsize=(5, 4))  # Reduced size
+    fig, ax = plt.subplots()
     n_labels = np.max(region_map) + 1
     cmap = mcolors.ListedColormap(plt.cm.hsv(np.linspace(0, 1, n_labels)))
     norm = mcolors.BoundaryNorm(boundaries=np.arange(-0.5, n_labels + 0.5), ncolors=n_labels)
