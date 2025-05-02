@@ -218,3 +218,24 @@ if uploaded_file:
 
     st.subheader("Segmentation Output")
     plot_regions(result, "Region Growing Output")
+
+    # --- Ground Truth (Optional) ---
+    st.subheader("Optional Ground Truth Upload and Comparison")
+    gt_file = st.file_uploader("Upload Ground Truth (.mat)", type="mat", key="gt")
+    if gt_file:
+        gt_mat = loadmat(gt_file)
+        gt_keys = [k for k in gt_mat.keys() if not k.startswith('__')]
+        gt_key = st.selectbox("Select Ground Truth Key", gt_keys)
+        ground_truth = gt_mat[gt_key]
+
+        if ground_truth.shape != result.shape:
+            st.error(f"Shape mismatch: Segmentation output shape {result.shape} vs Ground Truth shape {ground_truth.shape}")
+        else:
+            fig, ax = plt.subplots()
+            n_labels_gt = np.max(ground_truth) + 1
+            cmap_gt = mcolors.ListedColormap(plt.cm.tab20(np.linspace(0, 1, n_labels_gt)))
+            norm_gt = mcolors.BoundaryNorm(boundaries=np.arange(-0.5, n_labels_gt + 0.5), ncolors=n_labels_gt)
+            ax.imshow(ground_truth, cmap=cmap_gt, norm=norm_gt)
+            ax.set_title("Ground Truth Labels")
+            ax.axis('off')
+            st.pyplot(fig)
